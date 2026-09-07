@@ -59,16 +59,35 @@ public:
         if(!ctx||!c_){setDirty(false);return;}
         const int idx=modeIndex(c_);
         const auto vr=getViewSize();
-        // Actual button faces in master coordinates: ORGAN 706..813, BOTH 831..938, STROBE 956..1063; y 606..688.
-        // CView drawing coordinates are in the parent's coordinate system, so offset the local face coordinates by the view origin.
+        // Exact button faces in master coordinates:
+        // ORGAN 706..813, BOTH 831..938, STROBE 956..1063; y 606..688.
         constexpr std::array<double,3> left{{25.0,150.0,275.0}};
         constexpr std::array<double,3> right{{132.0,257.0,382.0}};
-        VSTGUI::CRect a(vr.left+left[idx],vr.top+58.0,vr.left+right[idx],vr.top+140.0);
-        // Keep the original button artwork readable: warm translucent active face plus a strong inset frame.
+        VSTGUI::CRect face(vr.left+left[idx],vr.top+58.0,vr.left+right[idx],vr.top+140.0);
+
+        // Mechanical pressed-state illusion. No glowing outline: the original switch stays visible,
+        // while a darker inset face, top/left inner shadow and subtle lower/right reflection make
+        // the selected button appear physically pushed into the panel.
         ctx->setDrawMode(VSTGUI::kAntiAliasing);
-        ctx->setFillColor(VSTGUI::CColor(230,157,57,42)); ctx->drawRect(a,VSTGUI::kDrawFilled);
-        a.inset(3.0,3.0);
-        ctx->setFrameColor(VSTGUI::CColor(255,202,105,235)); ctx->setLineWidth(3); ctx->drawRect(a,VSTGUI::kDrawStroked);
+        VSTGUI::CRect inner(face); inner.inset(4.0,4.0);
+        ctx->setFillColor(VSTGUI::CColor(8,7,5,72));
+        ctx->drawRect(inner,VSTGUI::kDrawFilled);
+
+        const double l=inner.left, t=inner.top, r=inner.right, b=inner.bottom;
+        ctx->setLineWidth(4.0);
+        ctx->setFrameColor(VSTGUI::CColor(0,0,0,175));
+        ctx->drawLine(VSTGUI::CPoint(l+2.0,t+2.0),VSTGUI::CPoint(r-2.0,t+2.0));
+        ctx->drawLine(VSTGUI::CPoint(l+2.0,t+2.0),VSTGUI::CPoint(l+2.0,b-2.0));
+
+        ctx->setLineWidth(2.0);
+        ctx->setFrameColor(VSTGUI::CColor(176,128,65,105));
+        ctx->drawLine(VSTGUI::CPoint(l+3.0,b-2.0),VSTGUI::CPoint(r-3.0,b-2.0));
+        ctx->drawLine(VSTGUI::CPoint(r-2.0,t+3.0),VSTGUI::CPoint(r-2.0,b-3.0));
+
+        // Very restrained warm glass/pilot-lamp tint, kept inside the switch face.
+        VSTGUI::CRect glow(inner); glow.inset(7.0,7.0);
+        ctx->setFillColor(VSTGUI::CColor(214,151,61,18));
+        ctx->drawRect(glow,VSTGUI::kDrawFilled);
         setDirty(false);
     }
     VSTGUI::CMouseEventResult onMouseDown(VSTGUI::CPoint& p,const VSTGUI::CButtonState&) override {
