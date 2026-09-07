@@ -14,7 +14,8 @@
     <view class="CView" size="681,548,1063,688" custom-view-name="Mode" transparent="true"/>
     <view class="CView" size="133.5,552.5,283.5,702.5" custom-view-name="Sensitivity" transparent="true"/>
     <view class="CView" size="440.5,553.5,590.5,703.5" custom-view-name="Decay" transparent="true"/>
-    <view class="CView" size="1170.5,552.5,1320.5,702.5" custom-view-name="Brightness" transparent="true"/>
+    <view class="CView" size="1174.5,554.5,1324.5,704.5" custom-view-name="Brightness" transparent="true"/>
     <view class="CView" size="1489.5,554.5,1639.5,704.5" custom-view-name="StrobeThreshold" transparent="true"/>
+    <view class="CView" size="1584,52,1660,82" custom-view-name="UiZoom" transparent="true"/>
   </template>
 </vstgui-ui-description>
