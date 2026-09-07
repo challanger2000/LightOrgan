@@ -18,11 +18,12 @@
     <view class="CMovieBitmap" origin="381,107" size="92,92" control-tag="204" bitmap="LampHighMid" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
     <view class="CMovieBitmap" origin="472,107" size="92,92" control-tag="205" bitmap="LampHigh" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
     <view class="CMovieBitmap" origin="573,107" size="92,92" control-tag="206" bitmap="LampStrobe" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
-    <view class="COptionMenu" origin="40,294" size="75,24" control-tag="100" transparent="true" frame-width="0"/>
-    <view class="COptionMenu" origin="122,294" size="100,24" control-tag="101" transparent="true" frame-width="0"/>
-    <view class="CKnob" origin="302,281" size="34,34" control-tag="102" transparent="true" draw-corona="false"/>
-    <view class="CKnob" origin="382,281" size="34,34" control-tag="103" transparent="true" draw-corona="false"/>
-    <view class="CKnob" origin="462,281" size="34,34" control-tag="104" transparent="true" draw-corona="false"/>
-    <view class="CKnob" origin="542,281" size="34,34" control-tag="105" transparent="true" draw-corona="false"/>
+
+    <view class="CView" size="40,294,115,318" custom-view-name="PowerHit" transparent="true"/>
+    <view class="CView" size="122,294,222,318" custom-view-name="ModeHit" transparent="true"/>
+    <view class="CView" size="296,274,342,322" custom-view-name="SensitivityHit" transparent="true"/>
+    <view class="CView" size="376,274,422,322" custom-view-name="DecayHit" transparent="true"/>
+    <view class="CView" size="456,274,502,322" custom-view-name="BrightnessHit" transparent="true"/>
+    <view class="CView" size="536,274,582,322" custom-view-name="StrobeThresholdHit" transparent="true"/>
   </template>
 </vstgui-ui-description>
