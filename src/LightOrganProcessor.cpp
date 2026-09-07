@@ -11,7 +11,7 @@ constexpr double kPi = 3.14159265358979323846;
 constexpr double kBandCenters[6] = {45.0, 140.0, 450.0, 1400.0, 4200.0, 11000.0};
 constexpr double kBandWeights[6] = {1.45, 1.25, 1.08, 1.00, 1.12, 1.38};
 constexpr double kBandQ = 1.15;
-constexpr double kMinStrobeIntervalSeconds = 0.20; // safety cap: 5 flashes/s
+constexpr double kMinStrobeIntervalSeconds = 0.125; // safety cap: 8 flashes/s
 }
 
 LightOrganProcessor::LightOrganProcessor() { setControllerClass(LightOrganControllerUID); }
@@ -124,7 +124,7 @@ void LightOrganProcessor::passAndAnalyze(ProcessData& data, Sample** in, Sample*
     strobeCooldownSeconds_ = std::max(0.0, strobeCooldownSeconds_ - seconds);
     const double threshold = 0.08 + strobeThreshold_ * 0.82; // MIN sensitive, MAX demanding
     if (mode_ == 2) {
-        // STROBE: regular flashing while signal remains above threshold, hard capped at 5 Hz.
+        // STROBE: regular flashing while signal remains above threshold, hard capped at 8 Hz.
         if (blockPeak > threshold && strobeCooldownSeconds_ <= 0.0) {
             strobeEnv_ = brightness_;
             strobeCooldownSeconds_ = kMinStrobeIntervalSeconds;
