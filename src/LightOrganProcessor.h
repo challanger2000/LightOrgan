@@ -56,10 +56,10 @@ private:
     double strobeCooldownSeconds_ = 0.0;
     bool power_ = true;
     int mode_ = 1;
-    double sensitivity_ = 0.55;
-    double decay_ = 0.42;
-    double brightness_ = 0.85;
-    double strobeThreshold_ = 0.58;
+    double sensitivity_ = 0.50;
+    double decay_ = 0.50;
+    double brightness_ = 0.50;
+    double strobeThreshold_ = 0.50;
 };
 
 class LightOrganController final : public EditControllerEx1 {
