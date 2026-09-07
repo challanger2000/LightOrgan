@@ -41,7 +41,6 @@ public:
         size_t lo=0,hi=0; double mix=0.0;
         if (v>=t[3]) lo=hi=3;
         else if (v>t[0]) for(size_t i=0;i<3;++i) if(v>=t[i]&&v<t[i+1]) {lo=i;hi=i+1;mix=(v-t[i])/(t[i+1]-t[i]);break;}
-        // Runtime assets are prepared at exactly 192x192. Draw 1:1; never clip a 426px master.
         const auto dst=getViewSize();
         if(bitmaps_[lo]) bitmaps_[lo]->draw(ctx,dst,VSTGUI::CPoint(0,0),static_cast<float>(1.0-mix));
         if(hi!=lo && bitmaps_[hi]) bitmaps_[hi]->draw(ctx,dst,VSTGUI::CPoint(0,0),static_cast<float>(mix));
@@ -57,13 +56,23 @@ class ModeView final : public VSTGUI::CView {
 public:
     ModeView(const VSTGUI::CRect& r,EditController* c):CView(r),c_(c){setMouseEnabled(true);timer_=VSTGUI::makeOwned<VSTGUI::CVSTGUITimer>([this](VSTGUI::CVSTGUITimer*){invalid();},50);}
     void draw(VSTGUI::CDrawContext* ctx) override {
-        if(!ctx||!c_){setDirty(false);return;} auto r=getViewSize(); const int idx=modeIndex(c_); const double w=r.getWidth()/3.0;
-        VSTGUI::CRect a(r.left+idx*w+8,r.top+7,r.left+(idx+1)*w-8,r.bottom-7);
-        ctx->setDrawMode(VSTGUI::kAntiAliasing); ctx->setFillColor(VSTGUI::CColor(230,157,57,34)); ctx->drawRect(a,VSTGUI::kDrawFilled);
-        ctx->setFrameColor(VSTGUI::CColor(255,196,92,150)); ctx->setLineWidth(2); ctx->drawRect(a,VSTGUI::kDrawStroked); setDirty(false);
+        if(!ctx||!c_){setDirty(false);return;}
+        const int idx=modeIndex(c_);
+        // Exact button faces in master-GUI coordinates, expressed relative to this view.
+        // ORGAN 706..813, BOTH 831..938, STROBE 956..1063; y 606..688.
+        constexpr std::array<double,3> left{{25.0,150.0,275.0}};
+        constexpr std::array<double,3> right{{132.0,257.0,382.0}};
+        VSTGUI::CRect a(left[idx],58.0,right[idx],140.0);
+        ctx->setDrawMode(VSTGUI::kAntiAliasing);
+        ctx->setFillColor(VSTGUI::CColor(230,157,57,28)); ctx->drawRect(a,VSTGUI::kDrawFilled);
+        ctx->setFrameColor(VSTGUI::CColor(255,196,92,175)); ctx->setLineWidth(2); ctx->drawRect(a,VSTGUI::kDrawStroked);
+        setDirty(false);
     }
     VSTGUI::CMouseEventResult onMouseDown(VSTGUI::CPoint& p,const VSTGUI::CButtonState&) override {
-        auto r=getViewSize(); int idx=std::clamp(static_cast<int>((p.x-r.left)/(r.getWidth()/3.0)),0,2); setParameter(c_,kModeId,idx/2.0); invalid(); return VSTGUI::kMouseEventHandled;
+        // Click zones follow the three actual button centers, not equal thirds of the whole panel.
+        const double x=p.x-getViewSize().left;
+        int idx = x < 141.0 ? 0 : (x < 266.0 ? 1 : 2);
+        setParameter(c_,kModeId,idx/2.0); invalid(); return VSTGUI::kMouseEventHandled;
     }
 private: EditController* c_{}; VSTGUI::SharedPointer<VSTGUI::CVSTGUITimer> timer_;
 };
@@ -75,11 +84,14 @@ public:
         timer_=VSTGUI::makeOwned<VSTGUI::CVSTGUITimer>([this](VSTGUI::CVSTGUITimer*){invalid();},33);
     }
     void draw(VSTGUI::CDrawContext* ctx) override {
-        if(!ctx||!c_){setDirty(false);return;} auto r=getViewSize(); auto center=r.getCenter(); constexpr double d=130.0;
+        if(!ctx||!c_){setDirty(false);return;}
+        auto r=getViewSize(); const auto center=r.getCenter(); constexpr double d=130.0;
         VSTGUI::CRect dst(center.x-d/2,center.y-d/2,center.x+d/2,center.y+d/2);
         if(bitmap_) bitmap_->draw(ctx,dst,VSTGUI::CPoint(0,0),1.f);
-        double v=std::clamp(c_->getParamNormalized(id_),0.0,1.0); double a=(-135.0+270.0*v)*kPi/180.0;
-        VSTGUI::CPoint p0(center.x+std::sin(a)*24,center.y-std::cos(a)*24),p1(center.x+std::sin(a)*54,center.y-std::cos(a)*54);
+        const double v=std::clamp(c_->getParamNormalized(id_),0.0,1.0);
+        // 0%=7:30, 50%=12:00 exactly, 100%=4:30. This is symmetric around the printed top tick.
+        const double angle=(-135.0+270.0*v)*kPi/180.0;
+        VSTGUI::CPoint p0(center.x+std::sin(angle)*24,center.y-std::cos(angle)*24),p1(center.x+std::sin(angle)*54,center.y-std::cos(angle)*54);
         ctx->setDrawMode(VSTGUI::kAntiAliasing); ctx->setLineWidth(5); ctx->setFrameColor(VSTGUI::CColor(35,22,12,210)); ctx->drawLine(p0,p1);
         ctx->setLineWidth(2.5); ctx->setFrameColor(VSTGUI::CColor(244,193,91,255)); ctx->drawLine(p0,p1); setDirty(false);
     }
@@ -91,7 +103,6 @@ private: EditController* c_{}; ParamID id_{}; bool drag_{}; double startY_{}; Pa
 } // namespace
 
 LightOrganEditor::LightOrganEditor(EditController* c):VST3Editor(c,"view","LightOrgan.uidesc"),controller_(c){
-    // Keep the 1774x887 artwork as the high-resolution coordinate master, but open at ~1206x603.
     setZoomFactor(0.68);
     setAllowedZoomFactors({0.68,0.85,1.0});
 }
@@ -112,11 +123,12 @@ VSTGUI::CView* LightOrganEditor::createView(const VSTGUI::UIAttributes& a,const 
         if(*n=="LampHighMid")return new LampView({1036.5,169.5,1228.5,361.5},controller_,204,hm,false);
         if(*n=="LampHigh")return new LampView({1280.5,164.5,1472.5,356.5},controller_,205,high,false);
         if(*n=="LampStrobe")return new LampView({1515.5,162.5,1707.5,354.5},controller_,206,st,true);
-        if(*n=="Mode")return new ModeView({681,548,1048,657},controller_);
-        if(*n=="Sensitivity")return new KnobView({133.5,552.5,283.5,702.5},controller_,kSensitivityId);
-        if(*n=="Decay")return new KnobView({440.5,553.5,590.5,703.5},controller_,kDecayId);
-        if(*n=="Brightness")return new KnobView({1170.5,552.5,1320.5,702.5},controller_,kBrightnessId);
-        if(*n=="StrobeThreshold")return new KnobView({1489.5,554.5,1639.5,704.5},controller_,kStrobeThresholdId);
+        if(*n=="Mode")return new ModeView({681,548,1063,688},controller_);
+        // Centers rechecked against the printed scale arcs in the frozen 1774x887 master.
+        if(*n=="Sensitivity")return new KnobView({133.5,552.5,283.5,702.5},controller_,kSensitivityId);   // 208.5,627.5
+        if(*n=="Decay")return new KnobView({440.5,553.5,590.5,703.5},controller_,kDecayId);                 // 515.5,628.5
+        if(*n=="Brightness")return new KnobView({1170.5,552.5,1320.5,702.5},controller_,kBrightnessId);   // 1245.5,627.5
+        if(*n=="StrobeThreshold")return new KnobView({1489.5,554.5,1639.5,704.5},controller_,kStrobeThresholdId); // 1564.5,629.5
     }
     return VSTGUI::VST3Editor::createView(a,d);
 }
