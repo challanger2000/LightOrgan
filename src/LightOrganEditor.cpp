@@ -26,11 +26,11 @@ public:
     void draw(VSTGUI::CDrawContext* ctx) override {
         if (!bitmap_ || !c_) { setDirty(false); return; }
         const double v = std::clamp(c_->getParamNormalized(id_), 0.0, 1.0);
+        const double visual = std::pow(v, 0.45); // brighter perceived response while preserving dynamics
         auto r = getViewSize();
-        // Sprite contains six 92x92 frames. Draw OFF first, then continuously blend the brightest frame.
         bitmap_->draw(ctx, r, VSTGUI::CPoint(0., 0.), 1.f);
-        if (v > 0.001)
-            bitmap_->draw(ctx, r, VSTGUI::CPoint(0., 92. * 5.), static_cast<float>(v));
+        if (visual > 0.001)
+            bitmap_->draw(ctx, r, VSTGUI::CPoint(0., 92. * 5.), static_cast<float>(visual));
         setDirty(false);
     }
 private:
