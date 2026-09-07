@@ -12,12 +12,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Prepare GUI PNG resources
-        shell: pwsh
-        run: |
-          python -m pip install --disable-pip-version-check pillow
-          python tools/convert_gui_assets.py
-
       - name: Configure
         shell: pwsh
         run: cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DSMTG_CREATE_PLUGIN_LINK=0 -DSMTG_CREATE_BUNDLE_FOR_WINDOWS=1
@@ -26,7 +20,7 @@ jobs:
         shell: pwsh
         run: cmake --build build --config Release --target LightOrgan --parallel
 
-      - name: Locate LightOrgan VST3 bundle
+      - name: Locate and verify LightOrgan VST3 bundle
         shell: pwsh
         run: |
           $root = "$env:GITHUB_WORKSPACE\build"
@@ -39,15 +33,39 @@ jobs:
           foreach ($name in @(
             "LightOrgan.uidesc",
             "LightOrgan_MainGUI.png",
-            "lamp_sub_6f.png",
-            "lamp_bass_6f.png",
-            "lamp_low_mid_6f.png",
-            "lamp_mid_6f.png",
-            "lamp_high_mid_6f.png",
-            "lamp_high_6f.png",
-            "lamp_strobe_6f.png"
+            "knob_vintage.png",
+            "lamp_bass_RUHE.png",
+            "lamp_bass_MODERAT.png",
+            "lamp_bass_STARK.png",
+            "lamp_bass_PEAK.png",
+            "lamp_low_RUHE.png",
+            "lamp_low_MODERAT.png",
+            "lamp_low_STARK.png",
+            "lamp_low_PEAK.png",
+            "lamp_low_mid_RUHE.png",
+            "lamp_low_mid_MODERAT.png",
+            "lamp_low_mid_STARK.png",
+            "lamp_low_mid_PEAK.png",
+            "lamp_mid_RUHE.png",
+            "lamp_mid_MODERAT.png",
+            "lamp_mid_STARK.png",
+            "lamp_mid_PEAK.png",
+            "lamp_high_mid_RUHE.png",
+            "lamp_high_mid_MODERAT.png",
+            "lamp_high_mid_STARK.png",
+            "lamp_high_mid_PEAK.png",
+            "lamp_high_RUHE.png",
+            "lamp_high_MODERAT.png",
+            "lamp_high_STARK.png",
+            "lamp_high_PEAK.png",
+            "lamp_strobe_RUHE.png",
+            "lamp_strobe_MODERAT.png",
+            "lamp_strobe_STARK.png",
+            "lamp_strobe_PEAK.png"
           )) {
-            if (-not (Test-Path (Join-Path $resources $name))) { throw "Missing GUI resource in VST3 bundle: $name" }
+            if (-not (Test-Path (Join-Path $resources $name))) {
+              throw "Missing GUI resource in VST3 bundle: $name"
+            }
           }
           Copy-Item $p.FullName "$artifact\LightOrgan.vst3" -Recurse -Force
 

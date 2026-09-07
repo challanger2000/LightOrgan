@@ -12,18 +12,39 @@ if(WIN32)
     )
 endif()
 
-# Production GUI and runtime lamp sprites, using the same PNG resource pattern
-# as the working Motivatorator GUI.
+# Frozen 1774x887 production GUI, one reusable knob body and 4-state lamp assets.
 smtg_target_add_plugin_resources(LightOrgan
     RESOURCES
     ../resource/LightOrgan.uidesc
     ../resource/LightOrgan_MainGUI.png
-    ../resource/lamp_sub_6f.png
-    ../resource/lamp_bass_6f.png
-    ../resource/lamp_low_mid_6f.png
-    ../resource/lamp_mid_6f.png
-    ../resource/lamp_high_mid_6f.png
-    ../resource/lamp_high_6f.png
-    ../resource/lamp_strobe_6f.png)
+    ../resource/knob_vintage.png
+    ../resource/lamp_bass_RUHE.png
+    ../resource/lamp_bass_MODERAT.png
+    ../resource/lamp_bass_STARK.png
+    ../resource/lamp_bass_PEAK.png
+    ../resource/lamp_low_RUHE.png
+    ../resource/lamp_low_MODERAT.png
+    ../resource/lamp_low_STARK.png
+    ../resource/lamp_low_PEAK.png
+    ../resource/lamp_low_mid_RUHE.png
+    ../resource/lamp_low_mid_MODERAT.png
+    ../resource/lamp_low_mid_STARK.png
+    ../resource/lamp_low_mid_PEAK.png
+    ../resource/lamp_mid_RUHE.png
+    ../resource/lamp_mid_MODERAT.png
+    ../resource/lamp_mid_STARK.png
+    ../resource/lamp_mid_PEAK.png
+    ../resource/lamp_high_mid_RUHE.png
+    ../resource/lamp_high_mid_MODERAT.png
+    ../resource/lamp_high_mid_STARK.png
+    ../resource/lamp_high_mid_PEAK.png
+    ../resource/lamp_high_RUHE.png
+    ../resource/lamp_high_MODERAT.png
+    ../resource/lamp_high_STARK.png
+    ../resource/lamp_high_PEAK.png
+    ../resource/lamp_strobe_RUHE.png
+    ../resource/lamp_strobe_MODERAT.png
+    ../resource/lamp_strobe_STARK.png
+    ../resource/lamp_strobe_PEAK.png)
 
 smtg_target_configure_version_file(LightOrgan)

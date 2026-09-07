@@ -3,19 +3,18 @@
   <bitmaps>
     <bitmap name="MainGUI" path="LightOrgan_MainGUI.png"/>
   </bitmaps>
-  <template name="view" class="CViewContainer" size="700,395" bitmap="MainGUI">
-    <view class="CView" size="20,107,112,199" custom-view-name="LampSub" transparent="true"/>
-    <view class="CView" size="110,107,202,199" custom-view-name="LampBass" transparent="true"/>
-    <view class="CView" size="200,107,292,199" custom-view-name="LampLowMid" transparent="true"/>
-    <view class="CView" size="290,107,382,199" custom-view-name="LampMid" transparent="true"/>
-    <view class="CView" size="381,107,473,199" custom-view-name="LampHighMid" transparent="true"/>
-    <view class="CView" size="472,107,564,199" custom-view-name="LampHigh" transparent="true"/>
-    <view class="CView" size="573,107,665,199" custom-view-name="LampStrobe" transparent="true"/>
-    <view class="CView" size="40,294,115,318" custom-view-name="PowerHit" transparent="true"/>
-    <view class="CView" size="122,294,222,318" custom-view-name="ModeHit" transparent="true"/>
-    <view class="CView" size="296,274,342,322" custom-view-name="SensitivityHit" transparent="true"/>
-    <view class="CView" size="376,274,422,322" custom-view-name="DecayHit" transparent="true"/>
-    <view class="CView" size="456,274,502,322" custom-view-name="BrightnessHit" transparent="true"/>
-    <view class="CView" size="536,274,582,322" custom-view-name="StrobeThresholdHit" transparent="true"/>
+  <template name="view" class="CViewContainer" size="1774,887" bitmap="MainGUI">
+    <view class="CView" size="64.5,167.5,256.5,359.5" custom-view-name="LampBass" transparent="true"/>
+    <view class="CView" size="301.5,166.5,493.5,358.5" custom-view-name="LampLow" transparent="true"/>
+    <view class="CView" size="541.5,166.5,733.5,358.5" custom-view-name="LampLowMid" transparent="true"/>
+    <view class="CView" size="789.5,163.5,981.5,355.5" custom-view-name="LampMid" transparent="true"/>
+    <view class="CView" size="1036.5,169.5,1228.5,361.5" custom-view-name="LampHighMid" transparent="true"/>
+    <view class="CView" size="1280.5,164.5,1472.5,356.5" custom-view-name="LampHigh" transparent="true"/>
+    <view class="CView" size="1515.5,162.5,1707.5,354.5" custom-view-name="LampStrobe" transparent="true"/>
+    <view class="CView" size="681,548,1048,657" custom-view-name="Mode" transparent="true"/>
+    <view class="CView" size="133.5,552.5,283.5,702.5" custom-view-name="Sensitivity" transparent="true"/>
+    <view class="CView" size="440.5,553.5,590.5,703.5" custom-view-name="Decay" transparent="true"/>
+    <view class="CView" size="1170.5,552.5,1320.5,702.5" custom-view-name="Brightness" transparent="true"/>
+    <view class="CView" size="1489.5,554.5,1639.5,704.5" custom-view-name="StrobeThreshold" transparent="true"/>
   </template>
 </vstgui-ui-description>
