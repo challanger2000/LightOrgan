@@ -8,8 +8,10 @@
 namespace Steinberg::Vst {
 namespace {
 constexpr double kPi = 3.14159265358979323846;
-constexpr double kCrossovers[5] = {80.0, 250.0, 800.0, 2500.0, 7000.0};
-constexpr double kMinStrobeIntervalSeconds = 0.20; // hard safety cap: max 5 flashes/second
+constexpr double kBandCenters[6] = {45.0, 140.0, 450.0, 1400.0, 4200.0, 11000.0};
+constexpr double kBandWeights[6] = {1.45, 1.25, 1.08, 1.00, 1.12, 1.38};
+constexpr double kBandQ = 1.15;
+constexpr double kMinStrobeIntervalSeconds = 0.20;
 }
 
 LightOrganProcessor::LightOrganProcessor() { setControllerClass(LightOrganControllerUID); }
@@ -38,7 +40,7 @@ tresult PLUGIN_API LightOrganProcessor::canProcessSampleSize(int32 symbolicSampl
 }
 
 void LightOrganProcessor::resetAnalysis() {
-    lp_.fill(0.0);
+    for (auto& b : bands_) b.reset();
     lampEnv_.fill(0.0);
     slowPeak_ = 0.0;
     strobeEnv_ = 0.0;
@@ -47,9 +49,17 @@ void LightOrganProcessor::resetAnalysis() {
 }
 
 void LightOrganProcessor::updateCoefficients() {
-    for (size_t i = 0; i < coeff_.size(); ++i) {
-        const double fc = std::min(kCrossovers[i], sampleRate_ * 0.45);
-        coeff_[i] = 1.0 - std::exp(-2.0 * kPi * fc / std::max(1.0, sampleRate_));
+    for (size_t i = 0; i < bands_.size(); ++i) {
+        const double fc = std::min(kBandCenters[i], sampleRate_ * 0.42);
+        const double w0 = 2.0 * kPi * fc / std::max(1.0, sampleRate_);
+        const double alpha = std::sin(w0) / (2.0 * kBandQ);
+        const double a0 = 1.0 + alpha;
+        bands_[i].b0 = alpha / a0;
+        bands_[i].b1 = 0.0;
+        bands_[i].b2 = -alpha / a0;
+        bands_[i].a1 = (-2.0 * std::cos(w0)) / a0;
+        bands_[i].a2 = (1.0 - alpha) / a0;
+        bands_[i].reset();
     }
 }
 
@@ -58,8 +68,7 @@ void LightOrganProcessor::updateParameters(ProcessData& data) {
     for (int32 i = 0; i < data.inputParameterChanges->getParameterCount(); ++i) {
         auto* q = data.inputParameterChanges->getParameterData(i);
         if (!q || q->getPointCount() == 0) continue;
-        ParamValue v = 0.0;
-        int32 offset = 0;
+        ParamValue v = 0.0; int32 offset = 0;
         if (q->getPoint(q->getPointCount() - 1, offset, v) != kResultOk) continue;
         v = std::clamp(v, 0.0, 1.0);
         switch (q->getParameterId()) {
@@ -97,24 +106,31 @@ void LightOrganProcessor::passAndAnalyze(ProcessData& data, Sample** in, Sample*
         }
         mono /= std::max<int32>(1, channels);
         blockPeak = std::max(blockPeak, std::abs(mono));
-
-        for (size_t i = 0; i < lp_.size(); ++i)
-            lp_[i] += coeff_[i] * (mono - lp_[i]);
-
-        const double bands[6] = {
-            lp_[0], lp_[1] - lp_[0], lp_[2] - lp_[1], lp_[3] - lp_[2], lp_[4] - lp_[3], mono - lp_[4]
-        };
-        for (size_t i = 0; i < 6; ++i) sumSq[i] += bands[i] * bands[i];
+        for (size_t i = 0; i < bands_.size(); ++i) {
+            const double y = bands_[i].process(mono);
+            sumSq[i] += y * y;
+        }
     }
 
     const double seconds = static_cast<double>(std::max<int32>(1, data.numSamples)) / std::max(1.0, sampleRate_);
-    const double releaseSeconds = 0.05 + decay_ * 1.15;
+    const double releaseSeconds = 0.035 + decay_ * 0.85;
     const double release = std::exp(-seconds / releaseSeconds);
-    const double gain = 0.6 + sensitivity_ * 9.4;
+    const double gain = 1.0 + sensitivity_ * 7.0;
 
+    std::array<double, 6> mapped{};
+    double mean = 0.0;
     for (size_t i = 0; i < 6; ++i) {
         const double rms = std::sqrt(sumSq[i] / std::max<int32>(1, data.numSamples));
-        const double target = std::clamp((1.0 - std::exp(-rms * gain * 5.0)) * brightness_, 0.0, 1.0);
+        mapped[i] = 1.0 - std::exp(-rms * gain * 2.4 * kBandWeights[i]);
+        mean += mapped[i];
+    }
+    mean /= 6.0;
+
+    for (size_t i = 0; i < 6; ++i) {
+        // Mild cross-band contrast makes kick, bass, mids and hats visibly separate
+        // instead of all lamps following the master envelope together.
+        const double contrasted = mapped[i] + 0.75 * (mapped[i] - mean);
+        const double target = std::clamp(contrasted * brightness_, 0.0, 1.0);
         lampEnv_[i] = std::max(target, lampEnv_[i] * release);
     }
 
@@ -132,19 +148,14 @@ void LightOrganProcessor::passAndAnalyze(ProcessData& data, Sample** in, Sample*
 
 tresult PLUGIN_API LightOrganProcessor::process(ProcessData& data) {
     updateParameters(data);
-
     if (data.numInputs > 0 && data.numOutputs > 0) {
-        auto& input = data.inputs[0];
-        auto& output = data.outputs[0];
+        auto& input = data.inputs[0]; auto& output = data.outputs[0];
         const int32 channels = std::min(input.numChannels, output.numChannels);
         if (channels > 0) {
-            if (data.symbolicSampleSize == kSample64)
-                passAndAnalyze<double>(data, input.channelBuffers64, output.channelBuffers64, channels);
-            else
-                passAndAnalyze<float>(data, input.channelBuffers32, output.channelBuffers32, channels);
+            if (data.symbolicSampleSize == kSample64) passAndAnalyze<double>(data, input.channelBuffers64, output.channelBuffers64, channels);
+            else passAndAnalyze<float>(data, input.channelBuffers32, output.channelBuffers32, channels);
         }
     }
-
     for (int i = 0; i < 6; ++i) {
         const bool showOrgan = power_ && mode_ != 2;
         publishMeter(data, kLampBaseId + i, showOrgan ? lampEnv_[i] : 0.0);
@@ -157,30 +168,20 @@ tresult PLUGIN_API LightOrganProcessor::process(ProcessData& data) {
 tresult PLUGIN_API LightOrganController::initialize(FUnknown* context) {
     auto r = EditControllerEx1::initialize(context);
     if (r != kResultOk) return r;
-
     auto* power = new StringListParameter(STR16("Power"), kPowerId);
-    power->appendString(STR16("OFF")); power->appendString(STR16("ON")); power->setNormalized(1.0);
-    parameters.addParameter(power);
-
+    power->appendString(STR16("OFF")); power->appendString(STR16("ON")); power->setNormalized(1.0); parameters.addParameter(power);
     auto* mode = new StringListParameter(STR16("Mode"), kModeId);
-    mode->appendString(STR16("ORGAN")); mode->appendString(STR16("BOTH")); mode->appendString(STR16("STROBE"));
-    mode->setNormalized(0.5); parameters.addParameter(mode);
-
+    mode->appendString(STR16("ORGAN")); mode->appendString(STR16("BOTH")); mode->appendString(STR16("STROBE")); mode->setNormalized(0.5); parameters.addParameter(mode);
     auto addPercent = [&](const TChar* name, ParamID id, double def) {
-        auto* p = new RangeParameter(name, id, STR16("%"), 0.0, 100.0, def * 100.0, 0,
-                                     ParameterInfo::kCanAutomate, kRootUnitId, name);
+        auto* p = new RangeParameter(name, id, STR16("%"), 0.0, 100.0, def * 100.0, 0, ParameterInfo::kCanAutomate, kRootUnitId, name);
         p->setPrecision(0); parameters.addParameter(p);
     };
     addPercent(STR16("Sensitivity"), kSensitivityId, 0.55);
     addPercent(STR16("Decay"), kDecayId, 0.42);
     addPercent(STR16("Brightness"), kBrightnessId, 0.85);
     addPercent(STR16("Strobe Threshold"), kStrobeThresholdId, 0.58);
-
-    for (int i = 0; i < 6; ++i)
-        parameters.addParameter(STR16("Lamp"), nullptr, 0, 0.0,
-                                ParameterInfo::kIsReadOnly | ParameterInfo::kIsHidden, kLampBaseId + i);
-    parameters.addParameter(STR16("Strobe Meter"), nullptr, 0, 0.0,
-                            ParameterInfo::kIsReadOnly | ParameterInfo::kIsHidden, kStrobeMeterId);
+    for (int i = 0; i < 6; ++i) parameters.addParameter(STR16("Lamp"), nullptr, 0, 0.0, ParameterInfo::kIsReadOnly | ParameterInfo::kIsHidden, kLampBaseId + i);
+    parameters.addParameter(STR16("Strobe Meter"), nullptr, 0, 0.0, ParameterInfo::kIsReadOnly | ParameterInfo::kIsHidden, kStrobeMeterId);
     return kResultOk;
 }
 
