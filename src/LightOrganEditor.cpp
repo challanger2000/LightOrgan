@@ -63,10 +63,10 @@ public:
     void draw(VSTGUI::CDrawContext* ctx) override {
         if(!ctx||!c_){setDirty(false);return;}
         const int active=modeIndex(c_);
-        // Final measured geometry: six assets are exactly 118x96 px.  The 4 px
-        // gaps keep the centre BOTH key physically separate from both neighbours.
-        constexpr std::array<double,3> x{{691.0,813.0,935.0}};
-        constexpr double y=558.0, w=118.0, h=96.0;
+        // Coordinates are local to ModeView (global origin 681,548).  Production
+        // assets are exactly 118x96 px and retain 4 px between neighbouring keys.
+        constexpr std::array<double,3> x{{10.0,132.0,254.0}};
+        constexpr double y=10.0, w=118.0, h=96.0;
         for(int i=0;i<3;++i){
             VSTGUI::CRect dst(x[i],y,x[i]+w,y+h);
             const size_t bitmapIndex=static_cast<size_t>(i*2+(i==active?1:0));
@@ -75,7 +75,6 @@ public:
         setDirty(false);
     }
     VSTGUI::CMouseEventResult onMouseDown(VSTGUI::CPoint& p,const VSTGUI::CButtonState&) override {
-        // Local coordinates: view origin is x=681.  Match the three measured asset boxes.
         constexpr std::array<double,3> left{{10.0,132.0,254.0}};
         constexpr double w=118.0;
         for(int i=0;i<3;++i){
