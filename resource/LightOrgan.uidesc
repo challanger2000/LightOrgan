@@ -2,23 +2,15 @@
 <vstgui-ui-description version="1">
   <bitmaps>
     <bitmap name="MainGUI" path="LightOrgan_MainGUI.png"/>
-    <bitmap name="LampSub" path="lamp_sub_6f.png"/>
-    <bitmap name="LampBass" path="lamp_bass_6f.png"/>
-    <bitmap name="LampLowMid" path="lamp_low_mid_6f.png"/>
-    <bitmap name="LampMid" path="lamp_mid_6f.png"/>
-    <bitmap name="LampHighMid" path="lamp_high_mid_6f.png"/>
-    <bitmap name="LampHigh" path="lamp_high_6f.png"/>
-    <bitmap name="LampStrobe" path="lamp_strobe_6f.png"/>
   </bitmaps>
   <template name="view" class="CViewContainer" size="700,395" bitmap="MainGUI">
-    <view class="CMovieBitmap" origin="20,107" size="92,92" control-tag="200" bitmap="LampSub" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
-    <view class="CMovieBitmap" origin="110,107" size="92,92" control-tag="201" bitmap="LampBass" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
-    <view class="CMovieBitmap" origin="200,107" size="92,92" control-tag="202" bitmap="LampLowMid" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
-    <view class="CMovieBitmap" origin="290,107" size="92,92" control-tag="203" bitmap="LampMid" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
-    <view class="CMovieBitmap" origin="381,107" size="92,92" control-tag="204" bitmap="LampHighMid" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
-    <view class="CMovieBitmap" origin="472,107" size="92,92" control-tag="205" bitmap="LampHigh" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
-    <view class="CMovieBitmap" origin="573,107" size="92,92" control-tag="206" bitmap="LampStrobe" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
-
+    <view class="CView" size="20,107,112,199" custom-view-name="LampSub" transparent="true"/>
+    <view class="CView" size="110,107,202,199" custom-view-name="LampBass" transparent="true"/>
+    <view class="CView" size="200,107,292,199" custom-view-name="LampLowMid" transparent="true"/>
+    <view class="CView" size="290,107,382,199" custom-view-name="LampMid" transparent="true"/>
+    <view class="CView" size="381,107,473,199" custom-view-name="LampHighMid" transparent="true"/>
+    <view class="CView" size="472,107,564,199" custom-view-name="LampHigh" transparent="true"/>
+    <view class="CView" size="573,107,665,199" custom-view-name="LampStrobe" transparent="true"/>
     <view class="CView" size="40,294,115,318" custom-view-name="PowerHit" transparent="true"/>
     <view class="CView" size="122,294,222,318" custom-view-name="ModeHit" transparent="true"/>
     <view class="CView" size="296,274,342,322" custom-view-name="SensitivityHit" transparent="true"/>
