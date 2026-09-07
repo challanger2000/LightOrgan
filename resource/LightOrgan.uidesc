@@ -11,7 +11,7 @@
     <view class="CView" size="1036.5,169.5,1228.5,361.5" custom-view-name="LampHighMid" transparent="true"/>
     <view class="CView" size="1280.5,164.5,1472.5,356.5" custom-view-name="LampHigh" transparent="true"/>
     <view class="CView" size="1515.5,162.5,1707.5,354.5" custom-view-name="LampStrobe" transparent="true"/>
-    <view class="CView" size="681,548,1048,657" custom-view-name="Mode" transparent="true"/>
+    <view class="CView" size="681,548,1063,688" custom-view-name="Mode" transparent="true"/>
     <view class="CView" size="133.5,552.5,283.5,702.5" custom-view-name="Sensitivity" transparent="true"/>
     <view class="CView" size="440.5,553.5,590.5,703.5" custom-view-name="Decay" transparent="true"/>
     <view class="CView" size="1170.5,552.5,1320.5,702.5" custom-view-name="Brightness" transparent="true"/>
