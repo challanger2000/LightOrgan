@@ -12,6 +12,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
+      - name: Prepare exact runtime GUI assets
+        shell: pwsh
+        run: |
+          python -m pip install pillow
+          @'
+          from PIL import Image
+          from pathlib import Path
+          r = Path('resource')
+          # VSTGUI bitmap drawing is 1:1. Prepare the approved 426 px lamp masters
+          # at the exact 192 px runtime aperture instead of clipping them.
+          for p in r.glob('lamp_*.png'):
+              im = Image.open(p).convert('RGBA')
+              if im.size == (426, 426):
+                  im.resize((192, 192), Image.Resampling.LANCZOS).save(p)
+          # Crop the transparent halo from the approved knob and make the visible
+          # body exactly 130 px. Runtime drawing then stays 1:1 as well.
+          p = r / 'knob_vintage.png'
+          im = Image.open(p).convert('RGBA')
+          crop = im.crop((176, 165, 1077, 1066))
+          crop.resize((130, 130), Image.Resampling.LANCZOS).save(r / 'knob_runtime.png')
+          '@ | python
+
       - name: Configure
         shell: pwsh
         run: cmake -S . -B build -G "Visual Studio 17 2022" -A x64 -DSMTG_CREATE_PLUGIN_LINK=0 -DSMTG_CREATE_BUNDLE_FOR_WINDOWS=1
@@ -31,41 +53,16 @@ jobs:
           if (-not $p) { throw "LightOrgan.vst3 bundle not found" }
           $resources = Join-Path $p.FullName "Contents\Resources"
           foreach ($name in @(
-            "LightOrgan.uidesc",
-            "LightOrgan_MainGUI.png",
-            "knob_vintage.png",
-            "lamp_bass_RUHE.png",
-            "lamp_bass_MODERAT.png",
-            "lamp_bass_STARK.png",
-            "lamp_bass_PEAK.png",
-            "lamp_low_RUHE.png",
-            "lamp_low_MODERAT.png",
-            "lamp_low_STARK.png",
-            "lamp_low_PEAK.png",
-            "lamp_low_mid_RUHE.png",
-            "lamp_low_mid_MODERAT.png",
-            "lamp_low_mid_STARK.png",
-            "lamp_low_mid_PEAK.png",
-            "lamp_mid_RUHE.png",
-            "lamp_mid_MODERAT.png",
-            "lamp_mid_STARK.png",
-            "lamp_mid_PEAK.png",
-            "lamp_high_mid_RUHE.png",
-            "lamp_high_mid_MODERAT.png",
-            "lamp_high_mid_STARK.png",
-            "lamp_high_mid_PEAK.png",
-            "lamp_high_RUHE.png",
-            "lamp_high_MODERAT.png",
-            "lamp_high_STARK.png",
-            "lamp_high_PEAK.png",
-            "lamp_strobe_RUHE.png",
-            "lamp_strobe_MODERAT.png",
-            "lamp_strobe_STARK.png",
-            "lamp_strobe_PEAK.png"
+            "LightOrgan.uidesc", "LightOrgan_MainGUI.png", "knob_runtime.png",
+            "lamp_bass_RUHE.png", "lamp_bass_MODERAT.png", "lamp_bass_STARK.png", "lamp_bass_PEAK.png",
+            "lamp_low_RUHE.png", "lamp_low_MODERAT.png", "lamp_low_STARK.png", "lamp_low_PEAK.png",
+            "lamp_low_mid_RUHE.png", "lamp_low_mid_MODERAT.png", "lamp_low_mid_STARK.png", "lamp_low_mid_PEAK.png",
+            "lamp_mid_RUHE.png", "lamp_mid_MODERAT.png", "lamp_mid_STARK.png", "lamp_mid_PEAK.png",
+            "lamp_high_mid_RUHE.png", "lamp_high_mid_MODERAT.png", "lamp_high_mid_STARK.png", "lamp_high_mid_PEAK.png",
+            "lamp_high_RUHE.png", "lamp_high_MODERAT.png", "lamp_high_STARK.png", "lamp_high_PEAK.png",
+            "lamp_strobe_RUHE.png", "lamp_strobe_MODERAT.png", "lamp_strobe_STARK.png", "lamp_strobe_PEAK.png"
           )) {
-            if (-not (Test-Path (Join-Path $resources $name))) {
-              throw "Missing GUI resource in VST3 bundle: $name"
-            }
+            if (-not (Test-Path (Join-Path $resources $name))) { throw "Missing GUI resource in VST3 bundle: $name" }
           }
           Copy-Item $p.FullName "$artifact\LightOrgan.vst3" -Recurse -Force
 
