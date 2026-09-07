@@ -59,40 +59,44 @@ public:
         if(!ctx||!c_){setDirty(false);return;}
         const int idx=modeIndex(c_);
         const auto vr=getViewSize();
-        // Exact button faces in master coordinates:
-        // ORGAN 706..813, BOTH 831..938, STROBE 956..1063; y 606..688.
-        constexpr std::array<double,3> left{{25.0,150.0,275.0}};
-        constexpr std::array<double,3> right{{132.0,257.0,382.0}};
-        VSTGUI::CRect face(vr.left+left[idx],vr.top+58.0,vr.left+right[idx],vr.top+140.0);
 
-        // Mechanical pressed-state illusion. No glowing outline: the original switch stays visible,
-        // while a darker inset face, top/left inner shadow and subtle lower/right reflection make
-        // the selected button appear physically pushed into the panel.
+        // Measured directly from the frozen 1774x887 GUI master. These are the visible
+        // switch-front rectangles, not the surrounding bezel/recess.
+        constexpr std::array<double,3> left{{704.0,838.0,961.0}};
+        constexpr std::array<double,3> right{{816.0,936.0,1058.0}};
+        constexpr double top=581.0;
+        constexpr double bottom=657.0;
+        VSTGUI::CRect face(left[idx],top,right[idx],bottom);
+
+        // Do not paint over the whole button: the original label and metal/plastic texture
+        // remain intact. We only reverse the bevel cues at the measured perimeter so the
+        // selected key reads as physically latched inward instead of merely highlighted.
         ctx->setDrawMode(VSTGUI::kAntiAliasing);
-        VSTGUI::CRect inner(face); inner.inset(4.0,4.0);
-        ctx->setFillColor(VSTGUI::CColor(8,7,5,72));
-        ctx->drawRect(inner,VSTGUI::kDrawFilled);
 
-        const double l=inner.left, t=inner.top, r=inner.right, b=inner.bottom;
-        ctx->setLineWidth(4.0);
-        ctx->setFrameColor(VSTGUI::CColor(0,0,0,175));
-        ctx->drawLine(VSTGUI::CPoint(l+2.0,t+2.0),VSTGUI::CPoint(r-2.0,t+2.0));
-        ctx->drawLine(VSTGUI::CPoint(l+2.0,t+2.0),VSTGUI::CPoint(l+2.0,b-2.0));
+        // Recess shadow: strongest at top, slightly softer at the sides.
+        ctx->setLineWidth(5.0);
+        ctx->setFrameColor(VSTGUI::CColor(0,0,0,205));
+        ctx->drawLine(VSTGUI::CPoint(face.left+4.0,face.top+2.5),VSTGUI::CPoint(face.right-4.0,face.top+2.5));
+        ctx->setLineWidth(3.0);
+        ctx->setFrameColor(VSTGUI::CColor(0,0,0,145));
+        ctx->drawLine(VSTGUI::CPoint(face.left+2.0,face.top+5.0),VSTGUI::CPoint(face.left+2.0,face.bottom-5.0));
+        ctx->drawLine(VSTGUI::CPoint(face.right-2.0,face.top+5.0),VSTGUI::CPoint(face.right-2.0,face.bottom-5.0));
 
+        // A very light lower lip is the exposed edge of the pushed-in key.
         ctx->setLineWidth(2.0);
-        ctx->setFrameColor(VSTGUI::CColor(176,128,65,105));
-        ctx->drawLine(VSTGUI::CPoint(l+3.0,b-2.0),VSTGUI::CPoint(r-3.0,b-2.0));
-        ctx->drawLine(VSTGUI::CPoint(r-2.0,t+3.0),VSTGUI::CPoint(r-2.0,b-3.0));
+        ctx->setFrameColor(VSTGUI::CColor(117,88,49,115));
+        ctx->drawLine(VSTGUI::CPoint(face.left+5.0,face.bottom-2.0),VSTGUI::CPoint(face.right-5.0,face.bottom-2.0));
 
-        // Very restrained warm glass/pilot-lamp tint, kept inside the switch face.
-        VSTGUI::CRect glow(inner); glow.inset(7.0,7.0);
-        ctx->setFillColor(VSTGUI::CColor(214,151,61,18));
-        ctx->drawRect(glow,VSTGUI::kDrawFilled);
+        // Tiny overall depth change only; low alpha deliberately preserves BOTH/ORGAN/STROBE text.
+        VSTGUI::CRect depth(face); depth.inset(5.0,6.0);
+        ctx->setFillColor(VSTGUI::CColor(0,0,0,22));
+        ctx->drawRect(depth,VSTGUI::kDrawFilled);
         setDirty(false);
     }
     VSTGUI::CMouseEventResult onMouseDown(VSTGUI::CPoint& p,const VSTGUI::CButtonState&) override {
-        const double x=p.x-getViewSize().left;
-        int idx = x < 141.0 ? 0 : (x < 266.0 ? 1 : 2);
+        // Click zones are centered on the three measured physical keys.
+        const double x=p.x;
+        int idx = x < 827.0 ? 0 : (x < 948.5 ? 1 : 2);
         setParameter(c_,kModeId,idx/2.0); invalid(); return VSTGUI::kMouseEventHandled;
     }
 private: EditController* c_{}; VSTGUI::SharedPointer<VSTGUI::CVSTGUITimer> timer_;
