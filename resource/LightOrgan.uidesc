@@ -4,18 +4,18 @@
     <bitmap name="MainGUI" path="LightOrgan_MainGUI.png"/>
   </bitmaps>
   <template name="view" class="CViewContainer" size="1774,887" bitmap="MainGUI">
-    <view class="CView" size="64.5,167.5,256.5,359.5" custom-view-name="LampBass" transparent="true"/>
-    <view class="CView" size="301.5,166.5,493.5,358.5" custom-view-name="LampLow" transparent="true"/>
-    <view class="CView" size="541.5,166.5,733.5,358.5" custom-view-name="LampLowMid" transparent="true"/>
-    <view class="CView" size="789.5,163.5,981.5,355.5" custom-view-name="LampMid" transparent="true"/>
-    <view class="CView" size="1036.5,169.5,1228.5,361.5" custom-view-name="LampHighMid" transparent="true"/>
-    <view class="CView" size="1280.5,164.5,1472.5,356.5" custom-view-name="LampHigh" transparent="true"/>
-    <view class="CView" size="1515.5,162.5,1707.5,354.5" custom-view-name="LampStrobe" transparent="true"/>
+    <view class="CView" size="64.5,171.5,256.5,363.5" custom-view-name="LampBass" transparent="true"/>
+    <view class="CView" size="301.5,167.5,493.5,359.5" custom-view-name="LampLow" transparent="true"/>
+    <view class="CView" size="544.5,168.5,736.5,360.5" custom-view-name="LampLowMid" transparent="true"/>
+    <view class="CView" size="789.5,164.5,981.5,356.5" custom-view-name="LampMid" transparent="true"/>
+    <view class="CView" size="1035.5,170.5,1227.5,362.5" custom-view-name="LampHighMid" transparent="true"/>
+    <view class="CView" size="1281.5,168.5,1473.5,360.5" custom-view-name="LampHigh" transparent="true"/>
+    <view class="CView" size="1514.5,168.5,1706.5,360.5" custom-view-name="LampStrobe" transparent="true"/>
     <view class="CView" size="681,548,1063,688" custom-view-name="Mode" transparent="true"/>
     <view class="CView" size="133.5,552.5,283.5,702.5" custom-view-name="Sensitivity" transparent="true"/>
     <view class="CView" size="440.5,553.5,590.5,703.5" custom-view-name="Decay" transparent="true"/>
     <view class="CView" size="1174.5,554.5,1324.5,704.5" custom-view-name="Brightness" transparent="true"/>
     <view class="CView" size="1489.5,554.5,1639.5,704.5" custom-view-name="StrobeThreshold" transparent="true"/>
-    <view class="CView" size="1584,52,1660,82" custom-view-name="UiZoom" transparent="true"/>
+    <view class="CView" size="1480,92,1556,122" custom-view-name="UiZoom" transparent="true"/>
   </template>
 </vstgui-ui-description>
