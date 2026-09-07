@@ -17,6 +17,12 @@ smtg_target_add_plugin_resources(LightOrgan
     ../resource/LightOrgan.uidesc
     ../resource/LightOrgan_MainGUI.png
     ../resource/knob_runtime.png
+    ../resource/ORGAN_OFF.png
+    ../resource/ORGAN_ON.png
+    ../resource/BOTH_OFF.png
+    ../resource/BOTH_ON.png
+    ../resource/STROBE_OFF.png
+    ../resource/STROBE_ON.png
     ../resource/lamp_bass_RUHE.png
     ../resource/lamp_bass_MODERAT.png
     ../resource/lamp_bass_STARK.png
