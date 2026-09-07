@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vstgui-ui-description version="1">
+  <colors>
+    <color name="BG" rgba="#151515FF"/>
+    <color name="Panel" rgba="#242424FF"/>
+    <color name="Text" rgba="#E8E1D5FF"/>
+    <color name="Muted" rgba="#8E8A82FF"/>
+    <color name="Track" rgba="#323232FF"/>
+    <color name="Value" rgba="#D08032FF"/>
+  </colors>
+  <template name="view" class="CViewContainer" origin="0,0" size="900,520" transparent="false" background-color="BG">
+    <view class="CTextLabel" origin="30,20" size="840,38" title="LIGHT ORGAN" font-color="Text" text-alignment="center"/>
+    <view class="CTextLabel" origin="30,56" size="840,20" title="SEE YOUR SOUND" font-color="Muted" text-alignment="center"/>
+
+    <view class="CTextLabel" origin="35,100" size="100,22" title="SUB" font-color="Text" text-alignment="center"/>
+    <view class="CTextLabel" origin="155,100" size="100,22" title="BASS" font-color="Text" text-alignment="center"/>
+    <view class="CTextLabel" origin="275,100" size="100,22" title="LOW MID" font-color="Text" text-alignment="center"/>
+    <view class="CTextLabel" origin="395,100" size="100,22" title="MID" font-color="Text" text-alignment="center"/>
+    <view class="CTextLabel" origin="515,100" size="100,22" title="HIGH MID" font-color="Text" text-alignment="center"/>
+    <view class="CTextLabel" origin="635,100" size="100,22" title="HIGH" font-color="Text" text-alignment="center"/>
+    <view class="CTextLabel" origin="755,100" size="110,22" title="STROBE" font-color="Text" text-alignment="center"/>
+
+    <view class="CSlider" origin="55,135" size="60,190" control-tag="200" min-value="0" max-value="1" style="vertical" draw-back="true" draw-value="true" draw-frame="false" draw-back-color="Track" draw-value-color="Value" mouse-enabled="false"/>
+    <view class="CSlider" origin="175,135" size="60,190" control-tag="201" min-value="0" max-value="1" style="vertical" draw-back="true" draw-value="true" draw-frame="false" draw-back-color="Track" draw-value-color="Value" mouse-enabled="false"/>
+    <view class="CSlider" origin="295,135" size="60,190" control-tag="202" min-value="0" max-value="1" style="vertical" draw-back="true" draw-value="true" draw-frame="false" draw-back-color="Track" draw-value-color="Value" mouse-enabled="false"/>
+    <view class="CSlider" origin="415,135" size="60,190" control-tag="203" min-value="0" max-value="1" style="vertical" draw-back="true" draw-value="true" draw-frame="false" draw-back-color="Track" draw-value-color="Value" mouse-enabled="false"/>
+    <view class="CSlider" origin="535,135" size="60,190" control-tag="204" min-value="0" max-value="1" style="vertical" draw-back="true" draw-value="true" draw-frame="false" draw-back-color="Track" draw-value-color="Value" mouse-enabled="false"/>
+    <view class="CSlider" origin="655,135" size="60,190" control-tag="205" min-value="0" max-value="1" style="vertical" draw-back="true" draw-value="true" draw-frame="false" draw-back-color="Track" draw-value-color="Value" mouse-enabled="false"/>
+    <view class="CSlider" origin="780,135" size="60,190" control-tag="206" min-value="0" max-value="1" style="vertical" draw-back="true" draw-value="true" draw-frame="false" draw-back-color="Track" draw-value-color="Text" mouse-enabled="false"/>
+
+    <view class="COptionMenu" origin="40,365" size="105,30" control-tag="100" back-color="Panel" frame-color="Muted" font-color="Text"/>
+    <view class="COptionMenu" origin="160,365" size="150,30" control-tag="101" back-color="Panel" frame-color="Muted" font-color="Text"/>
+    <view class="CTextLabel" origin="330,345" size="110,18" title="SENSITIVITY" font-color="Muted" text-alignment="center"/>
+    <view class="CSlider" origin="330,365" size="110,24" control-tag="102" min-value="0" max-value="1" draw-back="true" draw-value="true" draw-frame="false" draw-back-color="Track" draw-value-color="Value"/>
+    <view class="CTextLabel" origin="455,345" size="95,18" title="DECAY" font-color="Muted" text-alignment="center"/>
+    <view class="CSlider" origin="455,365" size="95,24" control-tag="103" min-value="0" max-value="1" draw-back="true" draw-value="true" draw-frame="false" draw-back-color="Track" draw-value-color="Value"/>
+    <view class="CTextLabel" origin="565,345" size="110,18" title="BRIGHTNESS" font-color="Muted" text-alignment="center"/>
+    <view class="CSlider" origin="565,365" size="110,24" control-tag="104" min-value="0" max-value="1" draw-back="true" draw-value="true" draw-frame="false" draw-back-color="Track" draw-value-color="Value"/>
+    <view class="CTextLabel" origin="690,345" size="170,18" title="STROBE THRESHOLD" font-color="Muted" text-alignment="center"/>
+    <view class="CSlider" origin="690,365" size="170,24" control-tag="105" min-value="0" max-value="1" draw-back="true" draw-value="true" draw-frame="false" draw-back-color="Track" draw-value-color="Value"/>
+
+    <view class="CTextLabel" origin="40,430" size="820,46" title="TECHNICAL FOUNDATION GUI — PRODUCTION GRAPHICS ARE THE NEXT INTEGRATION STEP" font-color="Muted" text-alignment="center"/>
+  </template>
+</vstgui-ui-description>
