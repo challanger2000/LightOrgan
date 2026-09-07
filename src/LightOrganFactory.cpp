@@ -12,7 +12,7 @@ DEF_CLASS2(INLINE_UID_FROM_FUID(LightOrganProcessorUID),
            "LightOrgan",
            Vst::kDistributable,
            Vst::PlugType::kFx,
-           "0.1.0",
+           "1.0.0",
            kVstVersionString,
            LightOrganProcessor::createInstance)
 
@@ -22,7 +22,7 @@ DEF_CLASS2(INLINE_UID_FROM_FUID(LightOrganControllerUID),
            "LightOrganController",
            0,
            "",
-           "0.1.0",
+           "1.0.0",
            kVstVersionString,
            LightOrganController::createInstance)
 
