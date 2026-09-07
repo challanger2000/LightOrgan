@@ -9,6 +9,7 @@ public:
     explicit LightOrganEditor(EditController* controller);
     VSTGUI::CView* createView(const VSTGUI::UIAttributes& attributes,
                               const VSTGUI::IUIDescription* description) override;
+    void setUserZoom(double factor);
 
 private:
     EditController* controller_ = nullptr;
