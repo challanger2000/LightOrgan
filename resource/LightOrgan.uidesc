@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vstgui-ui-description version="1">
   <bitmaps>
-    <bitmap name="MainGUI" path="LightOrgan_MainGUI.jpg"/>
-    <bitmap name="LampSub" path="lamp_sub_6f.jpg"/>
-    <bitmap name="LampBass" path="lamp_bass_6f.jpg"/>
-    <bitmap name="LampLowMid" path="lamp_low_mid_6f.jpg"/>
-    <bitmap name="LampMid" path="lamp_mid_6f.jpg"/>
-    <bitmap name="LampHighMid" path="lamp_high_mid_6f.jpg"/>
-    <bitmap name="LampHigh" path="lamp_high_6f.jpg"/>
-    <bitmap name="LampStrobe" path="lamp_strobe_6f.jpg"/>
+    <bitmap name="MainGUI" path="LightOrgan_MainGUI.png"/>
+    <bitmap name="LampSub" path="lamp_sub_6f.png"/>
+    <bitmap name="LampBass" path="lamp_bass_6f.png"/>
+    <bitmap name="LampLowMid" path="lamp_low_mid_6f.png"/>
+    <bitmap name="LampMid" path="lamp_mid_6f.png"/>
+    <bitmap name="LampHighMid" path="lamp_high_mid_6f.png"/>
+    <bitmap name="LampHigh" path="lamp_high_6f.png"/>
+    <bitmap name="LampStrobe" path="lamp_strobe_6f.png"/>
   </bitmaps>
-  <template name="view" class="CViewContainer" origin="0,0" size="700,395" transparent="false" bitmap="MainGUI">
+  <template name="view" class="CViewContainer" size="700,395" bitmap="MainGUI">
     <view class="CMovieBitmap" origin="20,107" size="92,92" control-tag="200" bitmap="LampSub" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
     <view class="CMovieBitmap" origin="110,107" size="92,92" control-tag="201" bitmap="LampBass" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
     <view class="CMovieBitmap" origin="200,107" size="92,92" control-tag="202" bitmap="LampLowMid" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
