@@ -10,7 +10,7 @@
     <bitmap name="LampHigh" path="lamp_high_6f.jpg"/>
     <bitmap name="LampStrobe" path="lamp_strobe_6f.jpg"/>
   </bitmaps>
-  <template name="view" class="CViewContainer" origin="0,0" size="700,395" transparent="false" background="MainGUI">
+  <template name="view" class="CViewContainer" origin="0,0" size="700,395" transparent="false" bitmap="MainGUI">
     <view class="CMovieBitmap" origin="20,107" size="92,92" control-tag="200" bitmap="LampSub" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
     <view class="CMovieBitmap" origin="110,107" size="92,92" control-tag="201" bitmap="LampBass" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
     <view class="CMovieBitmap" origin="200,107" size="92,92" control-tag="202" bitmap="LampLowMid" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
