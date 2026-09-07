@@ -113,10 +113,8 @@ void LightOrganProcessor::passAndAnalyze(ProcessData& data, Sample** in, Sample*
     }
 
     const double seconds = static_cast<double>(std::max<int32>(1, data.numSamples)) / std::max(1.0, sampleRate_);
-
-    // The old release could keep lamps glowing almost continuously on dense mixes.
-    // Keep DECAY useful, but make even its long setting return visibly towards OFF.
-    const double releaseSeconds = 0.018 + decay_ * 0.34;
+    // Incandescent-like response: fast enough to breathe between hits, but never a hard LED gate.
+    const double releaseSeconds = 0.045 + decay_ * 0.30;
     const double release = std::exp(-seconds / releaseSeconds);
     const double gain = 1.0 + sensitivity_ * 7.0;
 
@@ -124,24 +122,26 @@ void LightOrganProcessor::passAndAnalyze(ProcessData& data, Sample** in, Sample*
     double mean = 0.0;
     for (size_t i = 0; i < 6; ++i) {
         const double rms = std::sqrt(sumSq[i] / std::max<int32>(1, data.numSamples));
-        mapped[i] = 1.0 - std::exp(-rms * gain * 2.4 * kBandWeights[i]);
+        mapped[i] = 1.0 - std::exp(-rms * gain * 2.15 * kBandWeights[i]);
         mean += mapped[i];
     }
     mean /= 6.0;
 
     for (size_t i = 0; i < 6; ++i) {
-        // Stronger separation plus a real visual floor. Low residual energy must
-        // not leave every lamp permanently half-lit; it should be allowed to go OFF.
-        const double contrasted = mapped[i] + 0.95 * (mapped[i] - mean);
-        constexpr double kVisualFloor = 0.105;
-        double active = 0.0;
-        if (contrasted > kVisualFloor)
-            active = (contrasted - kVisualFloor) / (1.0 - kVisualFloor);
-        const double target = std::clamp(active * brightness_, 0.0, 1.0);
-
+        // Expand differences between frequency bands. Then use a soft knee rather than a gate:
+        // low energy gives only a faint glow, normal energy flickers, strong hits jump towards full ON.
+        const double separated = std::clamp(mapped[i] + 1.10 * (mapped[i] - mean), 0.0, 1.0);
+        double shaped = 0.0;
+        if (separated < 0.12)
+            shaped = separated * 0.22;                       // Ruhe: faint coloured glow
+        else if (separated < 0.42)
+            shaped = 0.0264 + (separated - 0.12) * 0.82;    // Moderat: visible flicker
+        else
+            shaped = 0.2724 + (separated - 0.42) * 1.255;   // Strong/peak: rapid rise to full light
+        shaped = std::clamp(shaped, 0.0, 1.0);
+        const double target = shaped * brightness_;
         lampEnv_[i] = std::max(target, lampEnv_[i] * release);
-        if (target <= 0.0 && lampEnv_[i] < 0.025)
-            lampEnv_[i] = 0.0;
+        if (target < 0.004 && lampEnv_[i] < 0.006) lampEnv_[i] = 0.0;
     }
 
     strobeCooldownSeconds_ = std::max(0.0, strobeCooldownSeconds_ - seconds);
