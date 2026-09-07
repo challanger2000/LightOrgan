@@ -43,25 +43,25 @@ def radial_mask(size, inner=0.48, outer=0.88):
 
 
 def make_off(frame, mask):
-    # A real unlit coloured Fresnel lens: texture stays visible, but it no longer
-    # looks as if a bulb is already burning behind it.
-    dark = ImageEnhance.Brightness(frame).enhance(0.28)
-    dark = ImageEnhance.Contrast(dark).enhance(1.12)
-    dark = ImageEnhance.Color(dark).enhance(0.72)
-    return Image.composite(dark, frame, mask)
+    # OFF should still look like coloured Fresnel glass, not like a black hole.
+    # Keep most of the original lens colour/texture and only remove the impression
+    # that the bulb is already lit behind it.
+    dim = ImageEnhance.Brightness(frame).enhance(0.68)
+    dim = ImageEnhance.Contrast(dim).enhance(1.04)
+    dim = ImageEnhance.Color(dim).enhance(0.95)
+    return Image.composite(dim, frame, mask)
 
 
 def make_on(frame, mask, strobe=False):
     # Strong internal illumination. Keep the bezel untouched and push only the
     # glass towards a hot centre so 100% meter level visibly means FULL ON.
-    lit = ImageEnhance.Brightness(frame).enhance(1.85 if not strobe else 2.25)
+    lit = ImageEnhance.Brightness(frame).enhance(2.00 if not strobe else 2.35)
     lit = ImageEnhance.Contrast(lit).enhance(1.08)
-    lit = ImageEnhance.Color(lit).enhance(1.28 if not strobe else 0.65)
+    lit = ImageEnhance.Color(lit).enhance(1.30 if not strobe else 0.65)
 
-    w, h = frame.size
     hot = Image.new("RGB", frame.size, (255, 250, 232) if not strobe else (255, 255, 255))
     core = radial_mask(frame.size, inner=0.12, outer=0.58)
-    core = core.point(lambda p: int(p * (0.62 if not strobe else 0.88)))
+    core = core.point(lambda p: int(p * (0.68 if not strobe else 0.90)))
     lit = Image.composite(hot, lit, core)
     return Image.composite(lit, frame, mask)
 
@@ -92,4 +92,4 @@ for name in LAMPS:
             frame = Image.blend(off, on, t)
             out.paste(frame, (0, i * fh))
         out.save(dst, format="PNG", optimize=True)
-    print(f"Built high-contrast lamp sprite {src.name} -> {dst.name}")
+    print(f"Built refined lamp sprite {src.name} -> {dst.name}")
