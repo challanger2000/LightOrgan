@@ -54,52 +54,39 @@ private:
 
 class ModeView final : public VSTGUI::CView {
 public:
-    ModeView(const VSTGUI::CRect& r,EditController* c):CView(r),c_(c){setMouseEnabled(true);timer_=VSTGUI::makeOwned<VSTGUI::CVSTGUITimer>([this](VSTGUI::CVSTGUITimer*){invalid();},50);}
+    ModeView(const VSTGUI::CRect& r,EditController* c):CView(r),c_(c){
+        constexpr std::array<const char*,6> names{{"ORGAN_OFF.png","ORGAN_ON.png","BOTH_OFF.png","BOTH_ON.png","STROBE_OFF.png","STROBE_ON.png"}};
+        for(size_t i=0;i<names.size();++i) bitmaps_[i]=VSTGUI::makeOwned<VSTGUI::CBitmap>(VSTGUI::CResourceDescription(names[i]));
+        setMouseEnabled(true);
+        timer_=VSTGUI::makeOwned<VSTGUI::CVSTGUITimer>([this](VSTGUI::CVSTGUITimer*){invalid();},50);
+    }
     void draw(VSTGUI::CDrawContext* ctx) override {
         if(!ctx||!c_){setDirty(false);return;}
-        const int idx=modeIndex(c_);
-        const auto vr=getViewSize();
-
-        // Measured directly from the frozen 1774x887 GUI master. These are the visible
-        // switch-front rectangles, not the surrounding bezel/recess.
-        constexpr std::array<double,3> left{{704.0,838.0,961.0}};
-        constexpr std::array<double,3> right{{816.0,936.0,1058.0}};
-        constexpr double top=581.0;
-        constexpr double bottom=657.0;
-        VSTGUI::CRect face(left[idx],top,right[idx],bottom);
-
-        // Do not paint over the whole button: the original label and metal/plastic texture
-        // remain intact. We only reverse the bevel cues at the measured perimeter so the
-        // selected key reads as physically latched inward instead of merely highlighted.
-        ctx->setDrawMode(VSTGUI::kAntiAliasing);
-
-        // Recess shadow: strongest at top, slightly softer at the sides.
-        ctx->setLineWidth(5.0);
-        ctx->setFrameColor(VSTGUI::CColor(0,0,0,205));
-        ctx->drawLine(VSTGUI::CPoint(face.left+4.0,face.top+2.5),VSTGUI::CPoint(face.right-4.0,face.top+2.5));
-        ctx->setLineWidth(3.0);
-        ctx->setFrameColor(VSTGUI::CColor(0,0,0,145));
-        ctx->drawLine(VSTGUI::CPoint(face.left+2.0,face.top+5.0),VSTGUI::CPoint(face.left+2.0,face.bottom-5.0));
-        ctx->drawLine(VSTGUI::CPoint(face.right-2.0,face.top+5.0),VSTGUI::CPoint(face.right-2.0,face.bottom-5.0));
-
-        // A very light lower lip is the exposed edge of the pushed-in key.
-        ctx->setLineWidth(2.0);
-        ctx->setFrameColor(VSTGUI::CColor(117,88,49,115));
-        ctx->drawLine(VSTGUI::CPoint(face.left+5.0,face.bottom-2.0),VSTGUI::CPoint(face.right-5.0,face.bottom-2.0));
-
-        // Tiny overall depth change only; low alpha deliberately preserves BOTH/ORGAN/STROBE text.
-        VSTGUI::CRect depth(face); depth.inset(5.0,6.0);
-        ctx->setFillColor(VSTGUI::CColor(0,0,0,22));
-        ctx->drawRect(depth,VSTGUI::kDrawFilled);
+        const int active=modeIndex(c_);
+        // Final measured geometry: six assets are exactly 118x96 px.  The 4 px
+        // gaps keep the centre BOTH key physically separate from both neighbours.
+        constexpr std::array<double,3> x{{691.0,813.0,935.0}};
+        constexpr double y=558.0, w=118.0, h=96.0;
+        for(int i=0;i<3;++i){
+            VSTGUI::CRect dst(x[i],y,x[i]+w,y+h);
+            const size_t bitmapIndex=static_cast<size_t>(i*2+(i==active?1:0));
+            if(bitmaps_[bitmapIndex]) bitmaps_[bitmapIndex]->draw(ctx,dst,VSTGUI::CPoint(0,0),1.f);
+        }
         setDirty(false);
     }
     VSTGUI::CMouseEventResult onMouseDown(VSTGUI::CPoint& p,const VSTGUI::CButtonState&) override {
-        // Click zones are centered on the three measured physical keys.
-        const double x=p.x;
-        int idx = x < 827.0 ? 0 : (x < 948.5 ? 1 : 2);
-        setParameter(c_,kModeId,idx/2.0); invalid(); return VSTGUI::kMouseEventHandled;
+        // Local coordinates: view origin is x=681.  Match the three measured asset boxes.
+        constexpr std::array<double,3> left{{10.0,132.0,254.0}};
+        constexpr double w=118.0;
+        for(int i=0;i<3;++i){
+            if(p.x>=left[i] && p.x<left[i]+w){setParameter(c_,kModeId,i/2.0);invalid();return VSTGUI::kMouseEventHandled;}
+        }
+        return VSTGUI::kMouseEventHandled;
     }
-private: EditController* c_{}; VSTGUI::SharedPointer<VSTGUI::CVSTGUITimer> timer_;
+private:
+    EditController* c_{};
+    std::array<VSTGUI::SharedPointer<VSTGUI::CBitmap>,6> bitmaps_;
+    VSTGUI::SharedPointer<VSTGUI::CVSTGUITimer> timer_;
 };
 
 class KnobView final : public VSTGUI::CView {
