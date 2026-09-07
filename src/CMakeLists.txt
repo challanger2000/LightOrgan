@@ -14,6 +14,14 @@ endif()
 
 smtg_target_add_plugin_resources(LightOrgan
     RESOURCES
-    ../resource/LightOrgan.uidesc)
+    ../resource/LightOrgan.uidesc
+    ../resource/LightOrgan_MainGUI.jpg
+    ../resource/lamp_sub_12f.jpg
+    ../resource/lamp_bass_12f.jpg
+    ../resource/lamp_low_mid_12f.jpg
+    ../resource/lamp_mid_12f.jpg
+    ../resource/lamp_high_mid_12f.jpg
+    ../resource/lamp_high_12f.jpg
+    ../resource/lamp_strobe_12f.jpg)
 
 smtg_target_configure_version_file(LightOrgan)
