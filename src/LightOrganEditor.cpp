@@ -58,18 +58,20 @@ public:
     void draw(VSTGUI::CDrawContext* ctx) override {
         if(!ctx||!c_){setDirty(false);return;}
         const int idx=modeIndex(c_);
-        // Exact button faces in master-GUI coordinates, expressed relative to this view.
-        // ORGAN 706..813, BOTH 831..938, STROBE 956..1063; y 606..688.
+        const auto vr=getViewSize();
+        // Actual button faces in master coordinates: ORGAN 706..813, BOTH 831..938, STROBE 956..1063; y 606..688.
+        // CView drawing coordinates are in the parent's coordinate system, so offset the local face coordinates by the view origin.
         constexpr std::array<double,3> left{{25.0,150.0,275.0}};
         constexpr std::array<double,3> right{{132.0,257.0,382.0}};
-        VSTGUI::CRect a(left[idx],58.0,right[idx],140.0);
+        VSTGUI::CRect a(vr.left+left[idx],vr.top+58.0,vr.left+right[idx],vr.top+140.0);
+        // Keep the original button artwork readable: warm translucent active face plus a strong inset frame.
         ctx->setDrawMode(VSTGUI::kAntiAliasing);
-        ctx->setFillColor(VSTGUI::CColor(230,157,57,28)); ctx->drawRect(a,VSTGUI::kDrawFilled);
-        ctx->setFrameColor(VSTGUI::CColor(255,196,92,175)); ctx->setLineWidth(2); ctx->drawRect(a,VSTGUI::kDrawStroked);
+        ctx->setFillColor(VSTGUI::CColor(230,157,57,42)); ctx->drawRect(a,VSTGUI::kDrawFilled);
+        a.inset(3.0,3.0);
+        ctx->setFrameColor(VSTGUI::CColor(255,202,105,235)); ctx->setLineWidth(3); ctx->drawRect(a,VSTGUI::kDrawStroked);
         setDirty(false);
     }
     VSTGUI::CMouseEventResult onMouseDown(VSTGUI::CPoint& p,const VSTGUI::CButtonState&) override {
-        // Click zones follow the three actual button centers, not equal thirds of the whole panel.
         const double x=p.x-getViewSize().left;
         int idx = x < 141.0 ? 0 : (x < 266.0 ? 1 : 2);
         setParameter(c_,kModeId,idx/2.0); invalid(); return VSTGUI::kMouseEventHandled;
@@ -89,7 +91,6 @@ public:
         VSTGUI::CRect dst(center.x-d/2,center.y-d/2,center.x+d/2,center.y+d/2);
         if(bitmap_) bitmap_->draw(ctx,dst,VSTGUI::CPoint(0,0),1.f);
         const double v=std::clamp(c_->getParamNormalized(id_),0.0,1.0);
-        // 0%=7:30, 50%=12:00 exactly, 100%=4:30. This is symmetric around the printed top tick.
         const double angle=(-135.0+270.0*v)*kPi/180.0;
         VSTGUI::CPoint p0(center.x+std::sin(angle)*24,center.y-std::cos(angle)*24),p1(center.x+std::sin(angle)*54,center.y-std::cos(angle)*54);
         ctx->setDrawMode(VSTGUI::kAntiAliasing); ctx->setLineWidth(5); ctx->setFrameColor(VSTGUI::CColor(35,22,12,210)); ctx->drawLine(p0,p1);
@@ -124,11 +125,10 @@ VSTGUI::CView* LightOrganEditor::createView(const VSTGUI::UIAttributes& a,const 
         if(*n=="LampHigh")return new LampView({1280.5,164.5,1472.5,356.5},controller_,205,high,false);
         if(*n=="LampStrobe")return new LampView({1515.5,162.5,1707.5,354.5},controller_,206,st,true);
         if(*n=="Mode")return new ModeView({681,548,1063,688},controller_);
-        // Centers rechecked against the printed scale arcs in the frozen 1774x887 master.
-        if(*n=="Sensitivity")return new KnobView({133.5,552.5,283.5,702.5},controller_,kSensitivityId);   // 208.5,627.5
-        if(*n=="Decay")return new KnobView({440.5,553.5,590.5,703.5},controller_,kDecayId);                 // 515.5,628.5
-        if(*n=="Brightness")return new KnobView({1170.5,552.5,1320.5,702.5},controller_,kBrightnessId);   // 1245.5,627.5
-        if(*n=="StrobeThreshold")return new KnobView({1489.5,554.5,1639.5,704.5},controller_,kStrobeThresholdId); // 1564.5,629.5
+        if(*n=="Sensitivity")return new KnobView({133.5,552.5,283.5,702.5},controller_,kSensitivityId);
+        if(*n=="Decay")return new KnobView({440.5,553.5,590.5,703.5},controller_,kDecayId);
+        if(*n=="Brightness")return new KnobView({1170.5,552.5,1320.5,702.5},controller_,kBrightnessId);
+        if(*n=="StrobeThreshold")return new KnobView({1489.5,554.5,1639.5,704.5},controller_,kStrobeThresholdId);
     }
     return VSTGUI::VST3Editor::createView(a,d);
 }
