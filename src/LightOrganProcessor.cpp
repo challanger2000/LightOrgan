@@ -113,7 +113,10 @@ void LightOrganProcessor::passAndAnalyze(ProcessData& data, Sample** in, Sample*
     }
 
     const double seconds = static_cast<double>(std::max<int32>(1, data.numSamples)) / std::max(1.0, sampleRate_);
-    const double releaseSeconds = 0.035 + decay_ * 0.85;
+
+    // The old release could keep lamps glowing almost continuously on dense mixes.
+    // Keep DECAY useful, but make even its long setting return visibly towards OFF.
+    const double releaseSeconds = 0.018 + decay_ * 0.34;
     const double release = std::exp(-seconds / releaseSeconds);
     const double gain = 1.0 + sensitivity_ * 7.0;
 
@@ -127,11 +130,18 @@ void LightOrganProcessor::passAndAnalyze(ProcessData& data, Sample** in, Sample*
     mean /= 6.0;
 
     for (size_t i = 0; i < 6; ++i) {
-        // Mild cross-band contrast makes kick, bass, mids and hats visibly separate
-        // instead of all lamps following the master envelope together.
-        const double contrasted = mapped[i] + 0.75 * (mapped[i] - mean);
-        const double target = std::clamp(contrasted * brightness_, 0.0, 1.0);
+        // Stronger separation plus a real visual floor. Low residual energy must
+        // not leave every lamp permanently half-lit; it should be allowed to go OFF.
+        const double contrasted = mapped[i] + 0.95 * (mapped[i] - mean);
+        constexpr double kVisualFloor = 0.105;
+        double active = 0.0;
+        if (contrasted > kVisualFloor)
+            active = (contrasted - kVisualFloor) / (1.0 - kVisualFloor);
+        const double target = std::clamp(active * brightness_, 0.0, 1.0);
+
         lampEnv_[i] = std::max(target, lampEnv_[i] * release);
+        if (target <= 0.0 && lampEnv_[i] < 0.025)
+            lampEnv_[i] = 0.0;
     }
 
     strobeCooldownSeconds_ = std::max(0.0, strobeCooldownSeconds_ - seconds);
