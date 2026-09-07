@@ -74,3 +74,4 @@ jobs:
           name: LightOrgan-Windows-VST3
           path: artifact
           if-no-files-found: error
+# MODE bitmap integration build
