@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vstgui-ui-description version="1">
+  <colors>
+    <color name="BG" rgba="#171717FF"/>
+    <color name="Panel" rgba="#242424FF"/>
+    <color name="Text" rgba="#E9E2D6FF"/>
+    <color name="Muted" rgba="#948E84FF"/>
+  </colors>
+  <template name="view" class="CViewContainer" origin="0,0" size="1200,677" transparent="false" background-color="BG">
+    <view class="CTextLabel" origin="0,22" size="1200,46" title="LIGHT ORGAN" font-color="Text" text-alignment="center"/>
+    <view class="CTextLabel" origin="0,65" size="1200,24" title="SEE YOUR SOUND" font-color="Muted" text-alignment="center"/>
+
+    <view class="CControl" custom-view-name="Lamp" origin="68,205" size="158,158" control-tag="200" mouse-enabled="false"/>
+    <view class="CControl" custom-view-name="Lamp" origin="222,205" size="158,158" control-tag="201" mouse-enabled="false"/>
+    <view class="CControl" custom-view-name="Lamp" origin="376,205" size="158,158" control-tag="202" mouse-enabled="false"/>
+    <view class="CControl" custom-view-name="Lamp" origin="530,205" size="158,158" control-tag="203" mouse-enabled="false"/>
+    <view class="CControl" custom-view-name="Lamp" origin="684,205" size="158,158" control-tag="204" mouse-enabled="false"/>
+    <view class="CControl" custom-view-name="Lamp" origin="838,205" size="158,158" control-tag="205" mouse-enabled="false"/>
+    <view class="CControl" custom-view-name="Lamp" origin="992,205" size="158,158" control-tag="206" mouse-enabled="false"/>
+
+    <view class="CTextLabel" origin="68,376" size="158,24" title="SUB" font-color="Muted" text-alignment="center"/>
+    <view class="CTextLabel" origin="222,376" size="158,24" title="BASS" font-color="Muted" text-alignment="center"/>
+    <view class="CTextLabel" origin="376,376" size="158,24" title="LOW MID" font-color="Muted" text-alignment="center"/>
+    <view class="CTextLabel" origin="530,376" size="158,24" title="MID" font-color="Muted" text-alignment="center"/>
+    <view class="CTextLabel" origin="684,376" size="158,24" title="HIGH MID" font-color="Muted" text-alignment="center"/>
+    <view class="CTextLabel" origin="838,376" size="158,24" title="HIGH" font-color="Muted" text-alignment="center"/>
+    <view class="CTextLabel" origin="992,376" size="158,24" title="STROBE" font-color="Muted" text-alignment="center"/>
+
+    <view class="COptionMenu" origin="68,505" size="110,32" control-tag="100" back-color="Panel" font-color="Text"/>
+    <view class="COptionMenu" origin="205,505" size="160,32" control-tag="101" back-color="Panel" font-color="Text"/>
+    <view class="CKnob" origin="432,481" size="58,58" control-tag="102"/>
+    <view class="CKnob" origin="568,481" size="58,58" control-tag="103"/>
+    <view class="CKnob" origin="704,481" size="58,58" control-tag="104"/>
+    <view class="CKnob" origin="840,481" size="58,58" control-tag="105"/>
+
+    <view class="CTextLabel" origin="412,544" size="98,22" title="SENSITIVITY" font-color="Muted" text-alignment="center"/>
+    <view class="CTextLabel" origin="548,544" size="98,22" title="DECAY" font-color="Muted" text-alignment="center"/>
+    <view class="CTextLabel" origin="684,544" size="98,22" title="BRIGHTNESS" font-color="Muted" text-alignment="center"/>
+    <view class="CTextLabel" origin="820,544" size="98,22" title="STROBE THR" font-color="Muted" text-alignment="center"/>
+  </template>
+</vstgui-ui-description>
