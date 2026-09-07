@@ -44,6 +44,7 @@ private:
     std::array<double, 6> lampEnv_{};
     double slowPeak_ = 0.0;
     double strobeEnv_ = 0.0;
+    double strobeCooldownSeconds_ = 0.0;
 
     bool power_ = true;
     int mode_ = 1; // 0 Organ, 1 Both, 2 Strobe
