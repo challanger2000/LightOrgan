@@ -20,18 +20,19 @@ jobs:
           from PIL import Image
           from pathlib import Path
           r = Path('resource')
-          # VSTGUI bitmap drawing is 1:1. Prepare the approved 426 px lamp masters
-          # at the exact 192 px runtime aperture instead of clipping them.
           for p in r.glob('lamp_*.png'):
               im = Image.open(p).convert('RGBA')
               if im.size == (426, 426):
                   im.resize((192, 192), Image.Resampling.LANCZOS).save(p)
-          # Crop the transparent halo from the approved knob and make the visible
-          # body exactly 130 px. Runtime drawing then stays 1:1 as well.
           p = r / 'knob_vintage.png'
           im = Image.open(p).convert('RGBA')
           crop = im.crop((176, 165, 1077, 1066))
           crop.resize((130, 130), Image.Resampling.LANCZOS).save(r / 'knob_runtime.png')
+          # MODE assets are production geometry, not scalable artwork.
+          for name in ('ORGAN_OFF.png','ORGAN_ON.png','BOTH_OFF.png','BOTH_ON.png','STROBE_OFF.png','STROBE_ON.png'):
+              im = Image.open(r / name).convert('RGBA')
+              if im.size != (118, 96):
+                  raise RuntimeError(f'{name}: expected 118x96, got {im.size}')
           '@ | python
 
       - name: Configure
@@ -54,6 +55,7 @@ jobs:
           $resources = Join-Path $p.FullName "Contents\Resources"
           foreach ($name in @(
             "LightOrgan.uidesc", "LightOrgan_MainGUI.png", "knob_runtime.png",
+            "ORGAN_OFF.png", "ORGAN_ON.png", "BOTH_OFF.png", "BOTH_ON.png", "STROBE_OFF.png", "STROBE_ON.png",
             "lamp_bass_RUHE.png", "lamp_bass_MODERAT.png", "lamp_bass_STARK.png", "lamp_bass_PEAK.png",
             "lamp_low_RUHE.png", "lamp_low_MODERAT.png", "lamp_low_STARK.png", "lamp_low_PEAK.png",
             "lamp_low_mid_RUHE.png", "lamp_low_mid_MODERAT.png", "lamp_low_mid_STARK.png", "lamp_low_mid_PEAK.png",
