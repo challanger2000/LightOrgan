@@ -12,12 +12,11 @@ if(WIN32)
     )
 endif()
 
-# Frozen 1774x887 production GUI, one reusable knob body and 4-state lamp assets.
 smtg_target_add_plugin_resources(LightOrgan
     RESOURCES
     ../resource/LightOrgan.uidesc
     ../resource/LightOrgan_MainGUI.png
-    ../resource/knob_vintage.png
+    ../resource/knob_runtime.png
     ../resource/lamp_bass_RUHE.png
     ../resource/lamp_bass_MODERAT.png
     ../resource/lamp_bass_STARK.png
