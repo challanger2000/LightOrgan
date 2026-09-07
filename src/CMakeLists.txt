@@ -9,6 +9,7 @@ target_link_libraries(LightOrgan PRIVATE sdk vstgui_support)
 if(WIN32)
     target_sources(LightOrgan PRIVATE
         ${vst3sdk_SOURCE_DIR}/public.sdk/source/main/dllmain.cpp
+        ../resource/LightOrgan.rc
     )
 endif()
 
