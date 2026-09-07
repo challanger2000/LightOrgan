@@ -9,6 +9,7 @@ namespace Steinberg::Vst {
 namespace {
 constexpr double kPi = 3.14159265358979323846;
 constexpr double kCrossovers[5] = {80.0, 250.0, 800.0, 2500.0, 7000.0};
+constexpr double kMinStrobeIntervalSeconds = 0.20; // hard safety cap: max 5 flashes/second
 }
 
 LightOrganProcessor::LightOrganProcessor() { setControllerClass(LightOrganControllerUID); }
@@ -41,6 +42,7 @@ void LightOrganProcessor::resetAnalysis() {
     lampEnv_.fill(0.0);
     slowPeak_ = 0.0;
     strobeEnv_ = 0.0;
+    strobeCooldownSeconds_ = 0.0;
     updateCoefficients();
 }
 
@@ -116,10 +118,16 @@ void LightOrganProcessor::passAndAnalyze(ProcessData& data, Sample** in, Sample*
         lampEnv_[i] = std::max(target, lampEnv_[i] * release);
     }
 
+    strobeCooldownSeconds_ = std::max(0.0, strobeCooldownSeconds_ - seconds);
     const double threshold = 0.08 + strobeThreshold_ * 0.82;
     const bool transient = blockPeak > threshold && blockPeak > slowPeak_ * 1.25;
     slowPeak_ = std::max(blockPeak, slowPeak_ * std::exp(-seconds / 0.18));
-    strobeEnv_ = transient ? brightness_ : strobeEnv_ * std::exp(-seconds / 0.035);
+    if (transient && strobeCooldownSeconds_ <= 0.0) {
+        strobeEnv_ = brightness_;
+        strobeCooldownSeconds_ = kMinStrobeIntervalSeconds;
+    } else {
+        strobeEnv_ *= std::exp(-seconds / 0.035);
+    }
 }
 
 tresult PLUGIN_API LightOrganProcessor::process(ProcessData& data) {
