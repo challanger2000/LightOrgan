@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <vstgui-ui-description version="1">
   <bitmaps>
-    <bitmap name="main" path="LightOrgan_MainGUI.jpg"/>
-    <bitmap name="sub" path="lamp_sub_12f.jpg"/>
-    <bitmap name="bass" path="lamp_bass_12f.jpg"/>
-    <bitmap name="lowmid" path="lamp_low_mid_12f.jpg"/>
-    <bitmap name="mid" path="lamp_mid_12f.jpg"/>
-    <bitmap name="highmid" path="lamp_high_mid_12f.jpg"/>
-    <bitmap name="high" path="lamp_high_12f.jpg"/>
-    <bitmap name="strobe" path="lamp_strobe_12f.jpg"/>
+    <bitmap name="MainGUI" path="LightOrgan_MainGUI.jpg"/>
+    <bitmap name="LampSub" path="lamp_sub_6f.jpg"/>
+    <bitmap name="LampBass" path="lamp_bass_6f.jpg"/>
+    <bitmap name="LampLowMid" path="lamp_low_mid_6f.jpg"/>
+    <bitmap name="LampMid" path="lamp_mid_6f.jpg"/>
+    <bitmap name="LampHighMid" path="lamp_high_mid_6f.jpg"/>
+    <bitmap name="LampHigh" path="lamp_high_6f.jpg"/>
+    <bitmap name="LampStrobe" path="lamp_strobe_6f.jpg"/>
   </bitmaps>
-  <colors><color name="Clear" rgba="#00000000"/></colors>
-  <template name="view" class="CViewContainer" origin="0,0" size="1200,677" transparent="false" background="main">
-    <view class="CMovieBitmap" origin="68,205" size="158,158" control-tag="200" bitmap="sub" height-of-one-image="158" min-value="0" max-value="1" mouse-enabled="false" transparent="true"/>
-    <view class="CMovieBitmap" origin="222,205" size="158,158" control-tag="201" bitmap="bass" height-of-one-image="158" min-value="0" max-value="1" mouse-enabled="false" transparent="true"/>
-    <view class="CMovieBitmap" origin="376,205" size="158,158" control-tag="202" bitmap="lowmid" height-of-one-image="158" min-value="0" max-value="1" mouse-enabled="false" transparent="true"/>
-    <view class="CMovieBitmap" origin="530,205" size="158,158" control-tag="203" bitmap="mid" height-of-one-image="158" min-value="0" max-value="1" mouse-enabled="false" transparent="true"/>
-    <view class="CMovieBitmap" origin="684,205" size="158,158" control-tag="204" bitmap="highmid" height-of-one-image="158" min-value="0" max-value="1" mouse-enabled="false" transparent="true"/>
-    <view class="CMovieBitmap" origin="838,205" size="158,158" control-tag="205" bitmap="high" height-of-one-image="158" min-value="0" max-value="1" mouse-enabled="false" transparent="true"/>
-    <view class="CMovieBitmap" origin="992,205" size="158,158" control-tag="206" bitmap="strobe" height-of-one-image="158" min-value="0" max-value="1" mouse-enabled="false" transparent="true"/>
-    <view class="COptionMenu" origin="68,505" size="110,32" control-tag="100" transparent="true" frame-width="0"/>
-    <view class="COptionMenu" origin="205,505" size="160,32" control-tag="101" transparent="true" frame-width="0"/>
-    <view class="CKnob" origin="432,481" size="58,58" control-tag="102" transparent="true" draw-corona="false"/>
-    <view class="CKnob" origin="568,481" size="58,58" control-tag="103" transparent="true" draw-corona="false"/>
-    <view class="CKnob" origin="704,481" size="58,58" control-tag="104" transparent="true" draw-corona="false"/>
-    <view class="CKnob" origin="840,481" size="58,58" control-tag="105" transparent="true" draw-corona="false"/>
+  <template name="view" class="CViewContainer" origin="0,0" size="700,395" transparent="false" background="MainGUI">
+    <view class="CMovieBitmap" origin="20,107" size="92,92" control-tag="200" bitmap="LampSub" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
+    <view class="CMovieBitmap" origin="110,107" size="92,92" control-tag="201" bitmap="LampBass" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
+    <view class="CMovieBitmap" origin="200,107" size="92,92" control-tag="202" bitmap="LampLowMid" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
+    <view class="CMovieBitmap" origin="290,107" size="92,92" control-tag="203" bitmap="LampMid" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
+    <view class="CMovieBitmap" origin="381,107" size="92,92" control-tag="204" bitmap="LampHighMid" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
+    <view class="CMovieBitmap" origin="472,107" size="92,92" control-tag="205" bitmap="LampHigh" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
+    <view class="CMovieBitmap" origin="573,107" size="92,92" control-tag="206" bitmap="LampStrobe" height-of-one-image="92" min-value="0" max-value="1" mouse-enabled="false"/>
+    <view class="COptionMenu" origin="40,294" size="75,24" control-tag="100" transparent="true" frame-width="0"/>
+    <view class="COptionMenu" origin="122,294" size="100,24" control-tag="101" transparent="true" frame-width="0"/>
+    <view class="CKnob" origin="302,281" size="34,34" control-tag="102" transparent="true" draw-corona="false"/>
+    <view class="CKnob" origin="382,281" size="34,34" control-tag="103" transparent="true" draw-corona="false"/>
+    <view class="CKnob" origin="462,281" size="34,34" control-tag="104" transparent="true" draw-corona="false"/>
+    <view class="CKnob" origin="542,281" size="34,34" control-tag="105" transparent="true" draw-corona="false"/>
   </template>
 </vstgui-ui-description>
