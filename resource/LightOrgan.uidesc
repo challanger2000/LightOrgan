@@ -3,6 +3,13 @@
   <bitmaps>
     <bitmap name="MainGUI" path="LightOrgan_MainGUI.png"/>
   </bitmaps>
+  <colors>
+    <color name="SignetSilver" rgba="#D7D7D7FF"/>
+    <color name="SignetRed" rgba="#D22F2FFF"/>
+  </colors>
+  <fonts>
+    <font name="SignetFont" font-name="Arial" size="32" bold="true"/>
+  </fonts>
   <template name="view" class="CViewContainer" size="1774,887" bitmap="MainGUI">
     <view class="CView" size="64.5,167.5,256.5,359.5" custom-view-name="LampBass" transparent="true"/>
     <view class="CView" size="301.5,166.5,493.5,358.5" custom-view-name="LampLow" transparent="true"/>
@@ -17,5 +24,7 @@
     <view class="CView" size="1174.5,554.5,1324.5,704.5" custom-view-name="Brightness" transparent="true"/>
     <view class="CView" size="1489.5,554.5,1639.5,704.5" custom-view-name="StrobeThreshold" transparent="true"/>
     <view class="CView" size="1480,92,1556,122" custom-view-name="UiZoom" transparent="true"/>
+    <view class="CTextLabel" origin="82,88" size="70,42" title="125" font="SignetFont" font-color="SignetSilver" text-alignment="center" transparent="true"/>
+    <view class="CTextLabel" origin="145,88" size="28,42" title="A" font="SignetFont" font-color="SignetRed" text-alignment="center" transparent="true"/>
   </template>
 </vstgui-ui-description>
